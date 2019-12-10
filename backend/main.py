@@ -4,6 +4,8 @@ from flask import Blueprint, jsonify
 from scipy.sparse.linalg import svds
 import numpy as np
 
+import json
+
 app = flask.Flask('__main__')
 @app.route('/')
 def my_index():
@@ -17,7 +19,7 @@ def add_book():
 
 # add a rating
 @app.route('/add_rating/<user_id>/<book_id>/<rating>', methods=['POST'])
-def add_book(user_id, book_id, rating):
+def add_rating(user_id, book_id, rating):
     user_rating = pd.DataFrame({'user_id':[user_id], 'book_id':[book_id], 'rating':[rating]})
     user_rating.to_csv('./Dataset/ratings.csv',mode='a', header=False, index=None)
     return 'Done', 201
@@ -25,19 +27,28 @@ def add_book(user_id, book_id, rating):
 
 # get list of books that user has rated
 @app.route('/add_rating/<user_id>')
-def add_book(user_id):
+def get_rated_books(user_id):
+ 
     ratings_data = pd.read_csv("./Dataset/ratings.csv")
-    user_ratings = ratings_data['user_id'] == user_id
+    user_ratings = ratings_data.loc[ratings_data['user_id']== user_id]
 
-    return jsonify({'books':user_ratings.head(10).to_dict(orient='records')})
+    return jsonify({'books':user_ratings.head(15).to_dict(orient='records')})
 
 
 
-# get all top rated books
+# get all top rated books and attach user score to them
 @app.route('/books')
 def books():
     books_data = pd.read_csv("./Dataset/books.csv")
-    return jsonify({'books':books_data.head(10).to_dict(orient='records')})
+    ratings_data = pd.read_csv("./Dataset/ratings.csv")
+
+    user_data = ratings_data.loc[ratings_data['user_id']== 1]
+    books_data = books_data.merge(user_data, how='left', on='book_id')
+    books_data = books_data.drop('user_id', 1)
+
+    books_data = books_data.fillna(0)
+    #print(books_data.head(10).to_dict(orient='records'))
+    return jsonify({'books':books_data.head(60).to_dict(orient='records')})
 
 
 # get recommended books by user id
