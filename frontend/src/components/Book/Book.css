@@ -1,0 +1,13 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.book_info {
+  font-size: 100em;
+}
+
+.book_name {
+  font-size: 100em;
+}
