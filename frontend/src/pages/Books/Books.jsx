@@ -4,6 +4,7 @@ import axios from "axios";
 import classes from "./Books.css";
 
 import Book from "../../components/Book/Book";
+import Recommend from "../../components/Book/Recommend/Recommend";
 
 const Books = props => {
   const [books, setBooks] = useState([]);
@@ -25,25 +26,22 @@ const Books = props => {
   }, []);
 
   // Get recommendations
-  function handleClick(e) {
-    e.preventDefault();
+  // function handleClick(e) {
+  //   e.preventDefault();
 
-    axios.get(`/recommendations/15`).then(res => {
-      console.log(res);
-      setBooks(res.data.books);
-    });
+  //   axios.get(`/recommendations/15`).then(res => {
+  //     console.log(res);
+  //     setBooks(res.data.books);
+  //   });
 
-    console.log("The link was clicked.");
-  }
+  //   console.log("The link was clicked.");
+  // }
 
-  console.log("books", books);
+  // console.log("books", books);
 
   return (
     <div className={classes.container}>
-      <button class="ui primary button" onClick={handleClick}>
-        Recommendations
-      </button>
-
+      {/* <Recommend /> */}
       <div className={classes.book_list}>
         {books.map(book => {
           return (

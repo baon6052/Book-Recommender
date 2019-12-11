@@ -1,0 +1,53 @@
+.container {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+  margin-left: 2em;
+  margin-right: 2em;
+}
+#home {
+  font-size: 1.1em;
+  background-color: #1976d2;
+  color: white;
+  font-weight: bold;
+}
+
+#home:hover {
+  background-color: #1565c0;
+}
+
+#search {
+  font-size: 1.1em;
+}
+
+#recommendations {
+  font-size: 1.1em;
+  background-color: #f57c00;
+  color: white;
+  font-weight: bold;
+}
+
+#recommendations:hover {
+  background-color: #ef6c00;
+}
+
+#logout {
+  font-size: 1.1em;
+  background-color: #d32f2f;
+  color: white;
+  font-weight: bold;
+}
+
+#logout:hover {
+  background-color: #c62828;
+}
+
+#ratings {
+  font-size: 1.1em;
+  background-color: #fb8c00;
+  color: white;
+  font-weight: bold;
+}
+
+#ratings:hover {
+  background-color: #ef6c00;
+}

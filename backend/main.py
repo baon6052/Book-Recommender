@@ -55,6 +55,7 @@ def books():
 @app.route('/recommendations/<user_id>')
 def get_recommendations(user_id):
     print(user_id)
+    user_id = int(user_id)
     books_data = pd.read_csv("./Dataset/books.csv")
     ratings_data = pd.read_csv("./Dataset/ratings.csv")
 
@@ -70,8 +71,9 @@ def get_recommendations(user_id):
     all_user_predicted_ratings = np.dot(np.dot(U, sigma), Vt) + user_ratings_mean.reshape(-1, 1)
     prediction_df = pd.DataFrame(all_user_predicted_ratings, columns = global_ratings_df.columns)
                                             
-    already_rated, predictions = recommend_books(prediction_df, 10, books_data, ratings_data, 10)
-
+    already_rated, predictions = recommend_books(prediction_df, user_id, books_data, ratings_data, 10)
+    print(predictions.head(10).to_dict(orient='records'))
+    predictions = predictions.dropna()
     return jsonify({'books':predictions.head(10).to_dict(orient='records')})
 
 def recommend_books(predictions_data, user_id, book_data, original_ratings_data, num_recommendations = 5):
