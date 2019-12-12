@@ -67,7 +67,7 @@
     "workbox-webpack-plugin": "4.3.1"
   },
   "scripts": {
-    "start": "cd ./backend/ python cd ./frontend/ && npm start",
+    "start": "cd ./frontend/ && npm start",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js"
   },
