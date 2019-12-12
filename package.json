@@ -68,8 +68,8 @@
   },
   "scripts": {
     "start": "cd ./frontend/ && npm start",
-    "build": "node scripts/build.js",
-    "test": "node scripts/test.js"
+    "build": "cd ./frontend/ && npm build",
+    "test": "cd ./frontend/ && npm test"
   },
   "eslintConfig": {
     "extends": "react-app"
