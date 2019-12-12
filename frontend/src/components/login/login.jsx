@@ -15,6 +15,7 @@ const Login = props => {
   // if exists then redirect otherwise output error message to signup
   const login = () => {
     if (username.trim() != "") {
+      console.log("in login func");
       props.history.push("/main");
       localStorage.setItem("username", username);
     }
@@ -25,7 +26,7 @@ const Login = props => {
       <div className={classes.border}>
         <div className={classes.header}>Login</div>
         <div className={classes.content}>
-          <form class="ui form">
+          <form class="ui form" onSubmit={login}>
             <div className={classes.image}>
               <img src={loginImg} />
             </div>
