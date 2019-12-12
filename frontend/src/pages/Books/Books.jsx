@@ -4,10 +4,15 @@ import axios from "axios";
 import classes from "./Books.css";
 
 import Book from "../../components/Book/Book";
+import Menu from "../../components/Menu/Menu";
 import Recommend from "../../components/Book/Recommend/Recommend";
 
 const Books = props => {
   const [books, setBooks] = useState([]);
+
+  useEffect(() => {
+    setBooks(props.books);
+  });
 
   // useEffect(() => {
   //   fetch("/books").then(response =>
@@ -16,14 +21,6 @@ const Books = props => {
   //     })
   //   );
   // }, []);
-
-  useEffect(() => {
-    axios.get(`/books`).then(res => {
-      // console.log(JSON.parse(res.data));
-
-      setBooks(res.data.books);
-    });
-  }, []);
 
   // Get recommendations
   // function handleClick(e) {
@@ -41,14 +38,16 @@ const Books = props => {
 
   return (
     <div className={classes.container}>
+      {/* <Menu history={props.history} loadRatings={getRatedBooks} /> */}
       {/* <Recommend /> */}
       <div className={classes.book_list}>
         {books.map(book => {
           return (
             <Book
               key={book.book_id}
+              book_id={book.book_id}
               book_name={book.original_title}
-              book_authour={book.authors}
+              book_author={book.authors}
               book_img={book.image_url}
               rating={book.rating}
             />

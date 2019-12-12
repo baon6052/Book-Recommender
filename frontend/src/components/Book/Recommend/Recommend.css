@@ -1,3 +1,9 @@
+.container {
+  margin-top: 0.23em;
+  width: min-content;
+  height: min-content;
+}
+
 #loader {
   margin-top: 7em;
   color: black;
@@ -32,4 +38,11 @@
 
 #dimmer {
   background-color: transparent;
+}
+
+.book_list {
+  display: grid;
+  grid-gap: 20px;
+  margin-left: 1.5em;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
 }

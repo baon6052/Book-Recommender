@@ -1,10 +1,9 @@
 .container {
   display: flex;
   flex-direction: column;
-  /* align-items: center; */
-  /* margin-left: 1.5em; */
   width: 12em;
   height: auto;
+  justify-content: flex-end;
 }
 
 .container:hover .img_container {
@@ -13,15 +12,18 @@
 }
 
 .book_info {
+  display: inline-flex;
+  justify-content: flex-end;
   flex-grow: 1;
-  margin-left: 0.5em;
-  margin-right: 0.5em;
+  padding: 0.5em;
+  flex-direction: column;
 }
 
 .img_container {
   flex-grow: 1;
   overflow: hidden;
-
+  display: inline-flex;
+  flex-direction: column;
   border-radius: 0.5em;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
 }
@@ -33,12 +35,29 @@
   border-top-left-radius: 0.5em;
 }
 
-.book_authour {
+.book_author {
   font-weight: 600;
+  margin: 0em 0em 1em 0em;
 }
 
 .book_name {
   font-weight: bold;
   font-size: 1.2em;
   color: #002171;
+  flex-grow: 1;
+  margin: 0;
+}
+
+/* u probs gonna have to add an ID and do ur "hack", ill let u do it YEa what do i need to do to it?
+these rules aren't being applied a h yea no worries i'll do it id hack sweet sweet
+ */
+div.ui.rating.ui.star.rating {
+  min-height: 2em;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.ui.star.rating > .icon {
+  display: table;
 }
