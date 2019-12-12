@@ -6,24 +6,40 @@ import axios from "axios";
 const Book = props => {
   const [rating, setRating] = useState(props.rating);
 
-  function addRating(new_rating) {
-    // /add_rating/ < user_id > /<book_id>/ < rating >
-
+  const addRating = new_rating => {
     axios
-      .post(
-        `/add_rating/` +
-          localStorage.getItem("username") +
-          "/" +
-          props.book_id +
-          "/" +
-          new_rating
-      )
+      .post("/add_rating", {
+        user_id: localStorage.getItem("user_id"),
+        book_id: props.book_id,
+        rating: new_rating
+      })
       .then(res => {
         console.log("set rating successfully");
+      })
+      .catch(error => {
+        console.log(error.res);
+        console.log("Unable to make rating");
       });
+  };
 
-    console.log("The link was clicked.");
-  }
+  // function addRating(new_rating) {
+  //   // /add_rating/ < user_id > /<book_id>/ < rating >
+
+  //   axios
+  //     .post(
+  //       `/add_rating/` +
+  //         localStorage.getItem("user_id") +
+  //         "/" +
+  //         props.book_id +
+  //         "/" +
+  //         new_rating
+  //     )
+  //     .then(res => {
+  //       console.log("set rating successfully");
+  //     });
+
+  //   console.log("The link was clicked.");
+  // }
 
   return (
     <div className={classes.container}>

@@ -35,6 +35,7 @@
   background-color: #d32f2f;
   color: white;
   font-weight: bold;
+  margin-right: 2em;
 }
 
 #logout:hover {

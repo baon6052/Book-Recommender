@@ -7,41 +7,93 @@ import axios from "axios";
 import Recommend from "../Book/Recommend/Recommend";
 import Books from "../../pages/Books/Books";
 import Book from "../Book/Book";
+import { ToastProvider, useToasts } from "react-toast-notifications";
 
 const Menu = props => {
   const [rating, setRating] = useState(props.rating);
   const [books, setBooks] = useState([]);
+  const [search, setSearch] = useState("");
+  const { addToast } = useToasts();
 
   useEffect(() => {
-    axios.get(`/books/` + localStorage.getItem("username")).then(res => {
-      // console.log(JSON.parse(res.data));
+    axios
+      .get("/books", {
+        params: {
+          user_id: localStorage.getItem("user_id")
+        }
+      })
+      .then(res => {
+        // show user's rated books
+        setBooks(res.data.books);
 
-      setBooks(res.data.books);
-    });
+        addToast("Welcome! " + localStorage.getItem("username"), {
+          appearance: "success",
+          autoDismiss: true
+        });
+      })
+      .catch(error => {
+        console.log(error.res);
+      });
   }, []);
 
   const logout = () => {
-    // console.log("went here");
-    //    return <Route render={({ history }) => history.Redirect} />;
-    // return <Redirect to="/main" />;
-
     props.history.push("/login");
-  };
 
-  const getRatedBooks = () => {
-    axios.get(`/rated_books/` + localStorage.getItem("username")).then(res => {
-      // console.log(JSON.parse(res.data));
-
-      setBooks(res.data.books);
+    addToast("Bye! See you again.", {
+      appearance: "success",
+      autoDismiss: true
     });
   };
 
-  const getAllBooks = () => {
-    fetch("/books/" + localStorage.getItem("username")).then(response =>
-      response.json().then(data => {
-        setBooks(data.books);
+  const getRatedBooks = () => {
+    axios
+      .get("/get_rated", {
+        params: {
+          user_id: localStorage.getItem("user_id")
+        }
       })
-    );
+      .then(res => {
+        // show user's rated books
+        setBooks(res.data.books);
+      })
+      .catch(error => {
+        console.log(error.res);
+      });
+  };
+
+  const getAllBooks = () => {
+    axios
+      .get("/books", {
+        params: {
+          user_id: localStorage.getItem("user_id")
+        }
+      })
+      .then(res => {
+        // show user's rated books
+        setBooks(res.data.books);
+      })
+      .catch(error => {
+        console.log(error.res);
+      });
+  };
+
+  const searchForBook = e => {
+    setSearch(e.target.value);
+
+    axios
+      .get("/search", {
+        params: {
+          search_input: e.target.value.trim()
+        }
+      })
+      .then(res => {
+        // show user's rated books
+        console.log(res.data.books);
+        setBooks(res.data.books);
+      })
+      .catch(error => {
+        console.log(error.res);
+      });
   };
 
   return (
@@ -61,7 +113,12 @@ const Menu = props => {
         <div className="right menu">
           <div className="item">
             <div className="ui icon input">
-              <input type="text" id={classes.search} placeholder="Search..." />
+              <input
+                type="text"
+                onChange={searchForBook}
+                id={classes.search}
+                placeholder="Search..."
+              />
               <i aria-hidden="true" class="search icon"></i>
             </div>
           </div>

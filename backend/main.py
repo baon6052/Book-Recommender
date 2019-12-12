@@ -3,6 +3,7 @@ import pandas as pd
 from flask import Blueprint, jsonify
 from scipy.sparse.linalg import svds
 import numpy as np
+from flask import request
 
 import json
 
@@ -11,6 +12,55 @@ app = flask.Flask('__main__')
 def my_index():
     return flask.render_template('index.html', token = 'Hello Flask + React')
 
+
+# login
+@app.route('/login')
+def login():
+    username = request.args.get('username')
+
+    print(username)
+    username_data = pd.read_csv("./Dataset/username.csv")
+    if len(username_data.loc[username_data['username'] == username]) == 1:
+        user_id = username_data.loc[username_data['username'] == username]
+        user_id = user_id['user_id'].values[0]
+        return jsonify({'user_id':int(user_id)})
+
+    return jsonify('Username Not Found'), 404
+
+# register
+@app.route('/register', methods=['POST'])
+def register():
+    username = request.get_json()['username']
+    username_data = pd.read_csv("./Dataset/username.csv")
+    if len(username_data.loc[username_data['username'] == str(username)]) == 1:
+        return 'Username Exists', 403
+    
+    new_user_id = username_data['user_id'].max() + 1
+    new_user = pd.DataFrame({'username':[str(username)],'user_id':[int(new_user_id)]})
+    new_user.to_csv('./Dataset/username.csv',mode='a', header=False, index=None)
+
+    return jsonify({'user_id':str(new_user_id)})
+
+
+# login
+@app.route('/search')
+def search():
+    search_input = request.args.get('search_input')
+
+    print(search_input)
+    book_data = pd.read_csv("./Dataset/books.csv")
+    #print([col for col in book_data])
+    #mask = np.column_stack([book_data[col].str.contains("(?i)" + str(search_input), na=False) for col in ['original_title', 'authors', 'genre'] ])
+    # print(mask.any() == True)
+    #book_data = book_data.loc[mask.any(axis=1)]
+    book_data = book_data.dropna()
+    title = book_data[book_data['original_title'].str.contains("(?i)" + str(search_input))]
+    author = book_data[book_data['authors'].str.contains("(?i)" + str(search_input))]
+    book_data = title.append(author)
+    book_data = book_data.drop_duplicates()
+
+    return jsonify({'books':book_data.head(60).to_dict(orient='records')})
+
 # add a book
 @app.route('/add_book', methods=['POST'])
 def add_book():
@@ -18,12 +68,12 @@ def add_book():
 
 
 # add a rating
-@app.route('/add_rating/<user_id>/<book_id>/<rating>', methods=['POST'])
-def add_rating(user_id, book_id, rating):
+@app.route('/add_rating', methods=['POST'])
+def add_rating():
 
-    # check if user has made rating
-    # if user has then just amend the rating
-    # other wise add the rating
+    user_id = request.get_json()['user_id']
+    book_id = request.get_json()['book_id']
+    rating = request.get_json()['rating']
 
     ratings_data = pd.read_csv("./Dataset/ratings.csv")
 
@@ -41,19 +91,21 @@ def add_rating(user_id, book_id, rating):
     return 'Done', 201
 
 
-# get list of books that user has rated
-@app.route('/add_rating/<user_id>')
-def get_rated_books(user_id):
+# # get list of books that user has rated
+# @app.route('/add_rating/<user_id>')
+# def get_rated_books(user_id):
  
-    ratings_data = pd.read_csv("./Dataset/ratings.csv")
-    user_ratings = ratings_data.loc[ratings_data['user_id']== user_id]
+#     ratings_data = pd.read_csv("./Dataset/ratings.csv")
+#     user_ratings = ratings_data.loc[ratings_data['user_id']== user_id]
 
-    return jsonify({'books':user_ratings.head(15).to_dict(orient='records')})
+#     return jsonify({'books':user_ratings.head(15).to_dict(orient='records')})
 
 
 # get all books that user has rated only
-@app.route('/rated_books/<user_id>')
-def geRratedBooks(user_id):
+@app.route('/get_rated')
+def geRratedBooks():
+    user_id = request.args.get('user_id')
+
     books_data = pd.read_csv("./Dataset/books.csv")
     ratings_data = pd.read_csv("./Dataset/ratings.csv")
 
@@ -67,8 +119,11 @@ def geRratedBooks(user_id):
 
 
 # get all top rated books and attach user score to them
-@app.route('/books/<user_id>')
-def books(user_id):
+@app.route('/books')
+def books(): 
+
+    user_id = request.args.get('user_id')
+
     books_data = pd.read_csv("./Dataset/books.csv")
     ratings_data = pd.read_csv("./Dataset/ratings.csv")
 
@@ -82,12 +137,22 @@ def books(user_id):
 
 
 # get recommended books by user id
-@app.route('/recommendations/<user_id>')
-def get_recommendations(user_id):
-    print(user_id)
+@app.route('/recommendations')
+def get_recommendations():
+    user_id = request.args.get('user_id')
+
+
     user_id = int(user_id)
     books_data = pd.read_csv("./Dataset/books.csv")
     ratings_data = pd.read_csv("./Dataset/ratings.csv")
+
+    # check if they have made any ratings
+    # if they have then procceed as normal
+    # otherwise assign user_id to the global user (which rates the most common books as five stars)
+
+    if len(ratings_data[ratings_data['user_id'] == int(user_id)]) == 0:
+        user_id = 100000
+
 
     global_ratings_df = ratings_data.pivot(index="user_id", columns="book_id", values="rating").fillna(0)
     
@@ -100,7 +165,7 @@ def get_recommendations(user_id):
 
     all_user_predicted_ratings = np.dot(np.dot(U, sigma), Vt) + user_ratings_mean.reshape(-1, 1)
     prediction_df = pd.DataFrame(all_user_predicted_ratings, columns = global_ratings_df.columns)
-                   
+    
     prediction_df['user_id'] = global_ratings_df.index.values  
   
     already_rated, predictions = recommend_books(prediction_df, user_id, books_data, ratings_data, 10)

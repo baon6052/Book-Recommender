@@ -15,7 +15,7 @@ const Register = props => {
   // if exists then redirect otherwise output error message to signup
   const Register = () => {
     props.history.push("/main");
-    localStorage.setItem("username", username);
+    localStorage.setItem("user_id", username);
   };
 
   return (

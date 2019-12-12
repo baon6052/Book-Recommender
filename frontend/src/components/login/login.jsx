@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 import loginImg from "../../resources/images/login.png";
+import { ToastProvider, useToasts } from "react-toast-notifications";
 
 import classes from "./login.css";
 import { Route, Redirect } from "react-router-dom";
-
+import { resetWarningCache } from "prop-types";
+import axios from "axios";
 const Login = props => {
+  const { addToast } = useToasts();
+
   const [username, setUsername] = useState("");
 
   const assignUsername = e => {
@@ -15,9 +19,70 @@ const Login = props => {
   // if exists then redirect otherwise output error message to signup
   const login = () => {
     if (username.trim() != "") {
-      console.log("in login func");
-      props.history.push("/main");
-      localStorage.setItem("username", username);
+      console.log(username);
+
+      axios
+        .get("/login", {
+          params: {
+            username: username
+          }
+        })
+        .then(res => {
+          props.history.push("/main");
+          localStorage.setItem("user_id", res.data.user_id);
+          localStorage.setItem("username", username);
+          //   addToast("Welcome! " + username, {
+          //     appearance: "success",
+          //     autoDismiss: true
+          //   });
+        })
+        .catch(error => {
+          console.log(error.res);
+          console.log("Error incorrect username");
+
+          addToast("Sorry! Username Not Found", {
+            appearance: "warning",
+            autoDismiss: true
+          });
+        });
+    } else {
+      addToast("Please Enter Valid Username!", {
+        appearance: "warning",
+        autoDismiss: true
+      });
+
+      console.log("Please enter a valid username");
+    }
+  };
+
+  const register = () => {
+    if (username.trim() != "") {
+      console.log(username);
+
+      axios
+        .post("/register", {
+          username: username
+        })
+        .then(res => {
+          console.log("in login func");
+          props.history.push("/main");
+          localStorage.setItem("user_id", res.data.user_id);
+
+          localStorage.setItem("username", username);
+        })
+        .catch(error => {
+          console.log(error.res);
+
+          addToast("Sorry! Username already exists", {
+            appearance: "warning",
+            autoDismiss: true
+          });
+        });
+    } else {
+      addToast("Please Enter Valid Username!", {
+        appearance: "warning",
+        autoDismiss: true
+      });
     }
   };
 
@@ -46,7 +111,11 @@ const Login = props => {
               Login
             </button>
 
-            <button class="ui button" onClick={login} id={classes.register_btn}>
+            <button
+              class="ui button"
+              onClick={register}
+              id={classes.register_btn}
+            >
               Sign up
             </button>
           </div>

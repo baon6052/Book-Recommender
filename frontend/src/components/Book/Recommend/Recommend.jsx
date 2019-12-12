@@ -33,18 +33,27 @@ const Recommend = props => {
   //   });
   // }, []);
 
-  //Get recommendations
+  //Get
+
+  ///recommendations
+
   function getRecommendations(e) {
     e.preventDefault();
     showProgress(true);
 
     axios
-      .get(`/recommendations/` + localStorage.getItem("username"))
+      .get("/recommendations", {
+        params: {
+          user_id: localStorage.getItem("user_id")
+        }
+      })
       .then(res => {
-        console.log(res);
+        // show user's rated books
         setBooks(res.data.books);
-        showProgress(false);
-        showModal(true);
+        toggleModal();
+      })
+      .catch(error => {
+        console.log(error.res);
       });
 
     console.log("The link was clicked.");

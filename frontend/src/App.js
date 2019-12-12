@@ -8,23 +8,25 @@ import ReactDOM from "react-dom";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import Books from "./pages/Books/Books";
-
+import { ToastProvider, useToasts } from "react-toast-notifications";
 import Login from "./components/login/login";
 import Book from "./components/Book/Book";
 import Menu from "./components/Menu/Menu";
 
 function App() {
   return (
-    <Router>
-      <div className={classes.Container}>
-        <Route exact path="/login" component={Login} />
-        {/* <Route exact path="/main" component={Books} /> */}
-        <Route exact path="/main" component={Menu} />
-        {/* <Menu />
+    <ToastProvider autoDismiss>
+      <Router>
+        <div className={classes.Container}>
+          <Route exact path="/login" component={Login} />
+          {/* <Route exact path="/main" component={Books} /> */}
+          <Route exact path="/main" component={Menu} />
+          {/* <Menu />
 
         <Books /> */}
-      </div>
-    </Router>
+        </div>
+      </Router>
+    </ToastProvider>
   );
 }
 
