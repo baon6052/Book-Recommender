@@ -10,7 +10,7 @@ import json
 app = flask.Flask('__main__')
 @app.route('/')
 def my_index():
-    return flask.render_template('index.html', token = 'Hello Flask + React')
+    return flask.render_template('index.html', token = 'Hello World')
 
 
 # login
@@ -18,7 +18,6 @@ def my_index():
 def login():
     username = request.args.get('username')
 
-    print(username)
     username_data = pd.read_csv("./Dataset/username.csv")
     if len(username_data.loc[username_data['username'] == username]) == 1:
         user_id = username_data.loc[username_data['username'] == username]
@@ -47,12 +46,8 @@ def register():
 def search():
     search_input = request.args.get('search_input')
 
-    print(search_input)
     book_data = pd.read_csv("./Dataset/books.csv")
-    #print([col for col in book_data])
-    #mask = np.column_stack([book_data[col].str.contains("(?i)" + str(search_input), na=False) for col in ['original_title', 'authors', 'genre'] ])
-    # print(mask.any() == True)
-    #book_data = book_data.loc[mask.any(axis=1)]
+
     book_data = book_data.dropna()
     title = book_data[book_data['original_title'].str.contains("(?i)" + str(search_input))]
     author = book_data[book_data['authors'].str.contains("(?i)" + str(search_input))]
@@ -60,11 +55,6 @@ def search():
     book_data = book_data.drop_duplicates()
 
     return jsonify({'books':book_data.head(60).to_dict(orient='records')})
-
-# add a book
-@app.route('/add_book', methods=['POST'])
-def add_book():
-    return 'Done', 201
 
 
 # add a rating
@@ -91,16 +81,6 @@ def add_rating():
     return 'Done', 201
 
 
-# # get list of books that user has rated
-# @app.route('/add_rating/<user_id>')
-# def get_rated_books(user_id):
- 
-#     ratings_data = pd.read_csv("./Dataset/ratings.csv")
-#     user_ratings = ratings_data.loc[ratings_data['user_id']== user_id]
-
-#     return jsonify({'books':user_ratings.head(15).to_dict(orient='records')})
-
-
 # get all books that user has rated only
 @app.route('/get_rated')
 def geRratedBooks():
@@ -114,7 +94,6 @@ def geRratedBooks():
     books_data = books_data.drop('user_id', 1)
 
     books_data = books_data.dropna()
-    #print(books_data.head(10).to_dict(orient='records'))
     return jsonify({'books':books_data.head(60).to_dict(orient='records')})
 
 
@@ -132,7 +111,6 @@ def books():
     books_data = books_data.drop('user_id', 1)
 
     books_data = books_data.fillna(0)
-    #print(books_data.head(10).to_dict(orient='records'))
     return jsonify({'books':books_data.head(60).to_dict(orient='records')})
 
 
@@ -146,13 +124,8 @@ def get_recommendations():
     books_data = pd.read_csv("./Dataset/books.csv")
     ratings_data = pd.read_csv("./Dataset/ratings.csv")
 
-    # check if they have made any ratings
-    # if they have then procceed as normal
-    # otherwise assign user_id to the global user (which rates the most common books as five stars)
-
     if len(ratings_data[ratings_data['user_id'] == int(user_id)]) == 0:
         user_id = 100000
-
 
     global_ratings_df = ratings_data.pivot(index="user_id", columns="book_id", values="rating").fillna(0)
     
@@ -184,10 +157,6 @@ def recommend_books(predictions_data, user_id, book_data, original_ratings_data,
     # Get the user's data and merge in the movie information
     user_data = original_ratings_data[original_ratings_data.user_id == (user_id)]
     user = user_data.merge(book_data, how = 'left', left_on="book_id", right_on = "book_id").sort_values(['rating'], ascending=False)
-    #
-    print('User {0} has already rated {1} books.'.format(user_id, user.shape[0]))
-    print('Recommending the highest {0} predicted ratings books not already rated.'.format(num_recommendations))
-    
 
     # Recommend the highest predicted rating movies that the user hasn't seen yet.
     recommendations = (book_data[~book_data['book_id'].isin(user['book_id'])].

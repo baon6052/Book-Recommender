@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from "react";
 
 import classes from "./Menu.css";
-import { Rating } from "semantic-ui-react";
-import { Route, Redirect } from "react-router-dom";
 import axios from "axios";
 import Recommend from "../Book/Recommend/Recommend";
 import Books from "../../pages/Books/Books";
-import Book from "../Book/Book";
-import { ToastProvider, useToasts } from "react-toast-notifications";
+import { useToasts } from "react-toast-notifications";
 
 const Menu = props => {
-  const [rating, setRating] = useState(props.rating);
   const [books, setBooks] = useState([]);
   const [search, setSearch] = useState("");
   const { addToast } = useToasts();
@@ -37,7 +33,7 @@ const Menu = props => {
   }, []);
 
   const logout = () => {
-    props.history.push("/login");
+    props.history.push("/");
 
     addToast("Bye! See you again.", {
       appearance: "success",
@@ -102,7 +98,6 @@ const Menu = props => {
         <a className="item" id={classes.home} onClick={getAllBooks}>
           Home
         </a>
-        {/* <a className="item " id={classes.ratings}> */}
 
         <a className="item" id={classes.ratings} onClick={getRatedBooks}>
           Your Ratings
@@ -119,7 +114,7 @@ const Menu = props => {
                 id={classes.search}
                 placeholder="Search..."
               />
-              <i aria-hidden="true" class="search icon"></i>
+              <i aria-hidden="true" className="search icon"></i>
             </div>
           </div>
           <a className="item" onClick={logout} id={classes.logout}>

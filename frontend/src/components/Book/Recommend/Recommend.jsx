@@ -1,41 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import load_img from "../../../resources/images/loading.svg";
 
 import classes from "./Recommend.css";
-import {
-  Modal,
-  Rating,
-  Header,
-  Progress,
-  Button,
-  Loader,
-  Segment,
-  Dimmer
-} from "semantic-ui-react";
+import { Modal, Header, Loader, Dimmer } from "semantic-ui-react";
 import Book from "../Book";
 
 import axios from "axios";
 
 const Recommend = props => {
-  const [rating, setRating] = useState(props.rating);
   const [books, setBooks] = useState([]);
   const [modalVisible, showModal] = useState(false);
   const [progressVisible, showProgress] = useState(false);
-  const [percent, setPercent] = useState(0);
-
-  // useEffect(() => {
-  //   axios.get(`/recommendations/15`).then(res => {
-  //     setBooks(res.data.books);
-  //     console.log(res.data.books);
-  //     // showProgress(false);
-  //     // showModal(true);
-  //   });
-  // }, []);
-
-  //Get
-
-  ///recommendations
 
   function getRecommendations(e) {
     e.preventDefault();
@@ -55,26 +31,21 @@ const Recommend = props => {
       .catch(error => {
         console.log(error.res);
       });
-
-    console.log("The link was clicked.");
   }
 
   function toggleProgress() {
-    setPercent(0);
     showProgress(!progressVisible);
-    console.log("toggle progress");
   }
 
   function toggleModal() {
     showModal(!modalVisible);
     showProgress(false);
-    console.log("toggle modal");
   }
 
   return (
     <div className={classes.container}>
       <a
-        class="item"
+        className="item"
         id={classes.recommendations}
         onClick={(toggleProgress, getRecommendations)}
       >

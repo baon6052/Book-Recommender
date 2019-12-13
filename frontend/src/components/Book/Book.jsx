@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import classes from "./Book.css";
 import { Rating } from "semantic-ui-react";
@@ -22,25 +22,6 @@ const Book = props => {
       });
   };
 
-  // function addRating(new_rating) {
-  //   // /add_rating/ < user_id > /<book_id>/ < rating >
-
-  //   axios
-  //     .post(
-  //       `/add_rating/` +
-  //         localStorage.getItem("user_id") +
-  //         "/" +
-  //         props.book_id +
-  //         "/" +
-  //         new_rating
-  //     )
-  //     .then(res => {
-  //       console.log("set rating successfully");
-  //     });
-
-  //   console.log("The link was clicked.");
-  // }
-
   return (
     <div className={classes.container}>
       <div className={classes.img_container}>
@@ -55,7 +36,6 @@ const Book = props => {
             onRate={(_, data) => {
               setRating(data.rating);
               addRating(data.rating);
-              console.log();
             }}
             clearable
           />

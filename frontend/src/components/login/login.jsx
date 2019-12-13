@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import loginImg from "../../resources/images/login.png";
 import { ToastProvider, useToasts } from "react-toast-notifications";
 
 import classes from "./login.css";
-import { Route, Redirect } from "react-router-dom";
-import { resetWarningCache } from "prop-types";
 import axios from "axios";
 const Login = props => {
   const { addToast } = useToasts();
@@ -17,10 +15,9 @@ const Login = props => {
 
   // check if username exists
   // if exists then redirect otherwise output error message to signup
-  const login = () => {
+  const login = e => {
+    e.preventDefault();
     if (username.trim() != "") {
-      console.log(username);
-
       axios
         .get("/login", {
           params: {
@@ -37,9 +34,6 @@ const Login = props => {
           //   });
         })
         .catch(error => {
-          console.log(error.res);
-          console.log("Error incorrect username");
-
           addToast("Sorry! Username Not Found", {
             appearance: "warning",
             autoDismiss: true
@@ -50,29 +44,22 @@ const Login = props => {
         appearance: "warning",
         autoDismiss: true
       });
-
-      console.log("Please enter a valid username");
     }
   };
 
   const register = () => {
     if (username.trim() != "") {
-      console.log(username);
-
       axios
         .post("/register", {
           username: username
         })
         .then(res => {
-          console.log("in login func");
           props.history.push("/main");
           localStorage.setItem("user_id", res.data.user_id);
 
           localStorage.setItem("username", username);
         })
         .catch(error => {
-          console.log(error.res);
-
           addToast("Sorry! Username already exists", {
             appearance: "warning",
             autoDismiss: true
@@ -86,17 +73,23 @@ const Login = props => {
     }
   };
 
+  const handleKey = e => {
+    if (e.key === "Enter") {
+      login();
+    }
+  };
+
   return (
     <div className={classes.container}>
       <div className={classes.border}>
         <div className={classes.header}>Login</div>
         <div className={classes.content}>
-          <form class="ui form" onSubmit={login}>
+          <form className="ui form" onSubmit={login}>
             <div className={classes.image}>
               <img src={loginImg} />
             </div>
 
-            <div class="field" id={classes.username_input}>
+            <div className="field" id={classes.username_input}>
               <label id={classes.username_label}>Username</label>
               <input
                 value={username}
@@ -107,12 +100,16 @@ const Login = props => {
           </form>
 
           <div className={classes.footer}>
-            <button class="ui button" onClick={login} id={classes.submit_btn}>
+            <button
+              className="ui button"
+              onClick={login}
+              id={classes.submit_btn}
+            >
               Login
             </button>
 
             <button
-              class="ui button"
+              className="ui button"
               onClick={register}
               id={classes.register_btn}
             >
