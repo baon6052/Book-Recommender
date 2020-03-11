@@ -3,12 +3,14 @@
 ![Login](login.PNG)
 
 Book Recommender using matrix factorization
-#### Specifications
+## Specifications
 * Add/Delete/Edit Rating
 * Maintain and apply unique user profile to book recommendation algorithm
 
 * React
 * Flask
+
+## Set-Up
 
 #### Backend
 
