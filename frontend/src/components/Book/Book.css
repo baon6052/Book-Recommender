@@ -48,9 +48,6 @@
   margin: 0;
 }
 
-/* u probs gonna have to add an ID and do ur "hack", ill let u do it YEa what do i need to do to it?
-these rules aren't being applied a h yea no worries i'll do it id hack sweet sweet
- */
 div.ui.rating.ui.star.rating {
   min-height: 2em;
   display: inline-flex;
