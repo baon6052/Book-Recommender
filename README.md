@@ -5,7 +5,7 @@
 Book Recommender using matrix factorization
 ## Specifications
 * Add/Delete/Edit Rating
-* Maintain and apply unique user profile to book recommendation algorithm
+* Maintain and apply unique user profile for book recommendation algorithm
 
 * React
 * Flask
